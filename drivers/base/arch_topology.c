@@ -225,7 +225,8 @@ int detect_share_cap_flag(void)
 		if (!policy)
 			return 0;
 
-		if (cpumask_equal(cpu_cpu_mask(cpu),
+		if (share_cap_level < share_cap_thread &&
+			cpumask_equal(topology_sibling_cpumask(cpu),
 				  policy->related_cpus)) {
 			share_cap_level = share_cap_die;
 			continue;
