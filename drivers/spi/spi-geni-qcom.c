@@ -242,6 +242,13 @@ static struct spi_master *get_spi_master(struct device *dev)
 	return spi;
 }
 
+int geni_spi_get_master_irq(struct spi_device *spi_slv)
+{
+	struct spi_geni_master *mas = spi_master_get_devdata(spi_slv->master);
+
+	return mas->irq;
+}
+
 static void spi_slv_setup(struct spi_geni_master *mas)
 {
 	geni_write_reg(SPI_SLAVE_EN, mas->base, SE_SPI_SLAVE_EN);
@@ -267,13 +274,6 @@ static int spi_slv_abort(struct spi_master *spi)
 	complete_all(&mas->tx_cb);
 	complete_all(&mas->rx_cb);
 	return 0;
-}
-
-int geni_spi_get_master_irq(struct spi_device *spi_slv)
-{
-	struct spi_geni_master *mas = spi_master_get_devdata(spi_slv->master);
-
-	return mas->irq;
 }
 
 static int get_spi_clk_cfg(u32 speed_hz, struct spi_geni_master *mas,
