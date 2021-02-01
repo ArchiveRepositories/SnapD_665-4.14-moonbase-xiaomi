@@ -653,9 +653,14 @@ static struct wcd_mbhc_config wcd_mbhc_cfg = {
 	.swap_gnd_mic = NULL,
 	.hs_ext_micbias = true,
 	.key_code[0] = KEY_MEDIA,
-	.key_code[1] = KEY_VOLUMEUP,
-	.key_code[2] = KEY_VOLUMEDOWN,
-	.key_code[3] = 0,
+#if 0
+	.key_code[1] = KEY_VOLUMEUP,//KEY_VOICECOMMAND /*HMI_M6300_A10-262 modify by qijin 201801025 */
+	.key_code[2] = KEY_VOLUMEDOWN,//KEY_VOLUMEUP /*HMI_M6300_A10-262 modify by qijin 201801025 */
+#else
+	.key_code[1] = BTN_1,//KEY_VOICECOMMAND /*HMI_M6300_A10-262 modify by dzy for xiaomi headset patch  201801107 */
+	.key_code[2] = BTN_2,//KEY_VOLUMEUP /*HMI_M6300_A10-262 modify by dzy for xiaomi headset patch  201801107 */
+#endif
+	.key_code[3] = 0,//KEY_VOLUMEDOWN /*HMI_M6300_A10-262 modify by qijin 201801025 */
 	.key_code[4] = 0,
 	.key_code[5] = 0,
 	.key_code[6] = 0,
@@ -7565,9 +7570,6 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 #if defined(CONFIG_SND_SOC_MAX98937)
 		.codec_name = "max98927",
 		.codec_dai_name = "max98927-aif1",
-//#elif defined(CONFIG_SND_SOC_TAS2562)	
-//		.codec_name     = "tas2562.0-004c",
-//		.codec_dai_name = "tas2562 ASI1",
 #else
 		.codec_name = "msm-stub-codec.1",
               .codec_dai_name = "msm-stub-rx",
@@ -7588,9 +7590,6 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 #if defined(CONFIG_SND_SOC_MAX98937)
 		.codec_name = "max98927",
 		.codec_dai_name = "max98927-aif1",
-//#elif defined(CONFIG_SND_SOC_TAS2562)	
-//		.codec_name     = "tas2562.0-004c",
-//		.codec_dai_name = "tas2562 ASI1",
 #else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-tx",
