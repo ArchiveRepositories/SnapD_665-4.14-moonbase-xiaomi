@@ -524,7 +524,6 @@ static int eeprom_parse_memory_map(struct msm_eeprom_ctrl_t *e_ctrl,
 				pr_err("tong ofilm", __func__);
 		}
 	}
-
 #endif
 	return rc;
 
