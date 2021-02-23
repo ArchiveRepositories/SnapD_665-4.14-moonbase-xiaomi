@@ -3,7 +3,7 @@
  * FocalTech TouchScreen driver.
  *
  * Copyright (c) 2012-2019, Focaltech Ltd. All rights reserved.
- * Copyright (C) 2019 XiaoMi, Inc.
+ * Copyright (C) 2021 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -47,11 +47,9 @@
 #include <linux/vmalloc.h>
 #include <linux/gpio.h>
 #include <linux/regulator/consumer.h>
-#include <linux/spi/spi-geni-qcom.h>
 #include <asm/uaccess.h>
 #include <linux/firmware.h>
 #include <linux/debugfs.h>
-#include <linux/pm_qos.h>
 #include <linux/mutex.h>
 #include <linux/workqueue.h>
 #include <linux/wait.h>
@@ -66,8 +64,18 @@
 #include <linux/dma-mapping.h>
 #include "focaltech_common.h"
 
+// include longcheer header
+#include "../lct_tp_info.h"
+#include "../lct_tp_selftest.h"
 #if FTS_GESTURE_EN
 #include <linux/pm_runtime.h>
+#include "../lct_tp_gesture.h"
+#endif
+#if LCT_TP_WORK_EN
+#include "../lct_tp_work.h"
+#endif
+#if LCT_TP_GRIP_AREA_EN
+#include "../lct_tp_grip_area.h"
 #endif
 
 /*****************************************************************************
@@ -163,8 +171,6 @@ struct fts_ts_data {
     spinlock_t irq_lock;
     struct mutex report_mutex;
     struct mutex bus_lock;
-    struct pm_qos_request pm_spi_req;
-    struct pm_qos_request pm_touch_req;
     int irq;
     int log_level;
     int fw_is_running;      /* confirm fw is running when using spi:default 0 */
@@ -239,6 +245,17 @@ int fts_create_apk_debug_channel(struct fts_ts_data *);
 void fts_release_apk_debug_channel(struct fts_ts_data *);
 #endif
 
+/* Longcheer procfs */
+int lct_create_procfs(struct fts_ts_data *ts_data);
+int lct_remove_procfs(struct fts_ts_data *ts_data);
+
+/* Longcheer get firmware version */
+int lct_fts_get_tpfwver(const char *cmd);
+
+#if FTS_GESTURE_EN
+int lct_fts_tp_gesture_callback(bool flag);
+#endif
+
 /* ADB functions */
 #if FTS_SYSFS_NODE_EN
 int fts_create_sysfs(struct fts_ts_data *ts_data);
@@ -260,6 +277,7 @@ int fts_esdcheck_resume(void);
 #if FTS_TEST_EN
 int fts_test_init(struct fts_ts_data *ts_data);
 int fts_test_exit(struct fts_ts_data *ts_data);
+int lct_tp_selftest_all(void);
 #endif
 
 /* Point Report Check*/

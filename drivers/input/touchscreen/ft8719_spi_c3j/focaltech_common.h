@@ -3,7 +3,7 @@
  * FocalTech fts TouchScreen driver.
  *
  * Copyright (c) 2012-2019, Focaltech Ltd. All rights reserved.
- * Copyright (C) 2019 XiaoMi, Inc.
+ * Copyright (C) 2021 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -157,7 +157,9 @@ struct ts_ic_info {
 #define FTS_FUNC_EXIT()
 #endif
 
-#define FTS_INFO(fmt, args...)
+#define FTS_INFO(fmt, args...) do { \
+    printk(KERN_WARNING "[FTS_TS/I]%s:"fmt"\n", __func__, ##args); \
+} while (0)
 
 #define FTS_ERROR(fmt, args...) do { \
     printk(KERN_ERR "[FTS_TS/E]%s:"fmt"\n", __func__, ##args); \

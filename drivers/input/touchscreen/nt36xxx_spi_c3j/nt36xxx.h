@@ -22,9 +22,7 @@
 #include <linux/delay.h>
 #include <linux/input.h>
 #include <linux/of.h>
-#include <linux/pm_qos.h>
 #include <linux/spi/spi.h>
-#include <linux/spi/spi-geni-qcom.h>
 #include <linux/uaccess.h>
 #include <linux/regulator/consumer.h>
 
@@ -43,7 +41,14 @@
 #include <linux/platform_data/spi-mt65xx.h>
 #endif
 
-#define NVT_DEBUG 0
+// include longcheer header
+#include "../lct_tp_info.h"
+#include "../lct_tp_selftest.h"
+#include "../lct_tp_gesture.h"
+#include "../lct_tp_grip_area.h"
+#include "../lct_tp_work.h"
+
+#define NVT_DEBUG 1
 
 //---GPIO number---
 #define NVTTOUCH_RST_PIN 87
@@ -60,11 +65,9 @@
 #define NVT_SPI_NAME "NVT-ts"
 
 #if NVT_DEBUG
-#define NVT_LOG(fmt, args...)                                                  \
-	pr_info("[%s] %s %d: " fmt, NVT_SPI_NAME, __func__, __LINE__, ##args)
+#define NVT_LOG(fmt, args...)    pr_err("[%s] %s %d: " fmt, NVT_SPI_NAME, __func__, __LINE__, ##args)
 #else
-#define NVT_LOG(fmt, args...)                                                  \
-	pr_debug("[%s] %s %d: " fmt, NVT_SPI_NAME, __func__, __LINE__, ##args)
+#define NVT_LOG(fmt, args...)    pr_info("[%s] %s %d: " fmt, NVT_SPI_NAME, __func__, __LINE__, ##args)
 #endif
 #define NVT_ERR(fmt, args...)    pr_err("[%s] %s %d: " fmt, NVT_SPI_NAME, __func__, __LINE__, ##args)
 
@@ -110,6 +113,12 @@ extern const uint16_t gesture_key_array[];
 
 //enable 'check touch vendor' feature
 #define CHECK_TOUCH_VENDOR
+
+//enable tp work feature
+#define LCT_TP_WORK_EN      1
+
+//enable tp grip area feature
+#define LCT_TP_GRIP_AREA_EN 1
 
 //---Touch Vendor ID---
 #define TP_VENDOR_UNKNOW    0x00
@@ -163,8 +172,6 @@ struct nvt_ts_data {
 	uint8_t *xbuf;
 	struct mutex xbuf_lock;
 	bool irq_enabled;
-	struct pm_qos_request pm_spi_req;
-	struct pm_qos_request pm_touch_req;
 #if WAKEUP_GESTURE
 	bool delay_gesture;
 	bool is_gesture_mode;
