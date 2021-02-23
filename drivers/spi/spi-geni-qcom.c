@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2021 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -188,6 +189,20 @@ struct spi_geni_master {
 	bool set_miso_sampling;
 	u32 miso_sampling_ctrl_val;
 };
+
+/*2019.11.30 longcheer wanghan add start*/
+/******************************************************************************
+ * *This functionis for get spi_geni_master->dev
+ * *spi_master: struct spi_device ->master
+ * *return: spi_geni_master->dev
+ ******************************************************************************/
+struct device *lct_get_spi_geni_master_dev(struct spi_master *spi)
+{
+	struct spi_geni_master *geni_mas = spi_master_get_devdata(spi);
+	return geni_mas->dev;
+}
+EXPORT_SYMBOL(lct_get_spi_geni_master_dev);
+/*2019.11.30 longcheer wanghan add end*/
 
 static void spi_slv_setup(struct spi_geni_master *mas);
 static void ssr_spi_force_suspend(struct device *dev);
@@ -2042,7 +2057,7 @@ static void ssr_spi_force_resume(struct device *dev)
 static const struct dev_pm_ops spi_geni_pm_ops = {
 	SET_RUNTIME_PM_OPS(spi_geni_runtime_suspend,
 					spi_geni_runtime_resume, NULL)
-	SET_SYSTEM_SLEEP_PM_OPS(spi_geni_suspend, spi_geni_resume)
+	SET_LATE_SYSTEM_SLEEP_PM_OPS(spi_geni_suspend, spi_geni_resume)
 };
 
 static const struct of_device_id spi_geni_dt_match[] = {
