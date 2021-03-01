@@ -784,10 +784,10 @@ static void set_load_weight(struct task_struct *p)
 static DEFINE_MUTEX(uclamp_mutex);
 
 /* Max allowed minimum utilization */
-unsigned int sysctl_sched_uclamp_util_min = SCHED_CAPACITY_SCALE;
+unsigned int sysctl_sched_uclamp_util_min = CONFIG_UCLAMP_DEFAULT_MIN;
 
 /* Max allowed maximum utilization */
-unsigned int sysctl_sched_uclamp_util_max = SCHED_CAPACITY_SCALE;
+unsigned int sysctl_sched_uclamp_util_max = CONFIG_UCLAMP_DEFAULT_MAX;
 
 /*
  * By default RT tasks run at the maximum performance point/capacity of the
@@ -804,7 +804,7 @@ unsigned int sysctl_sched_uclamp_util_max = SCHED_CAPACITY_SCALE;
  * This knob will not override the system default sched_util_clamp_min defined
  * above.
  */
-unsigned int sysctl_sched_uclamp_util_min_rt_default = SCHED_CAPACITY_SCALE;
+unsigned int sysctl_sched_uclamp_util_min_rt_default = CONFIG_UCLAMP_DEFAULT_MIN_RT;
 
 /* All clamps are required to be less or equal than these values */
 static struct uclamp_se uclamp_default[UCLAMP_CNT];
@@ -1269,8 +1269,8 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
 		goto done;
 
 	if (sysctl_sched_uclamp_util_min > sysctl_sched_uclamp_util_max ||
-	    sysctl_sched_uclamp_util_max > SCHED_CAPACITY_SCALE	||
-	    sysctl_sched_uclamp_util_min_rt_default > SCHED_CAPACITY_SCALE) {
+	    sysctl_sched_uclamp_util_max > CONFIG_UCLAMP_DEFAULT_MAX	||
+	    sysctl_sched_uclamp_util_min_rt_default > CONFIG_UCLAMP_DEFAULT_MIN_RT) {
 
 		result = -EINVAL;
 		goto undo;
@@ -1402,20 +1402,6 @@ static void uclamp_fork(struct task_struct *p)
 static void uclamp_post_fork(struct task_struct *p)
 {
 	uclamp_update_util_min_rt_default(p);
-}
-
-static void __init init_uclamp_rq(struct rq *rq)
-{
-	enum uclamp_id clamp_id;
-	struct uclamp_rq *uc_rq = rq->uclamp;
-
-	for_each_clamp_id(clamp_id) {
-		uc_rq[clamp_id] = (struct uclamp_rq) {
-			.value = uclamp_none(clamp_id)
-		};
-	}
-
-	rq->uclamp_flags = 0;
 }
 
 static void __init init_uclamp_rq(struct rq *rq)
