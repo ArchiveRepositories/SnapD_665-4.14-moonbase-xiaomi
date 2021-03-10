@@ -32,7 +32,6 @@
 #include <linux/tick.h>
 #include <linux/sched/topology.h>
 #include <linux/sched/sysctl.h>
-#include <linux/battery_saver.h>
 
 #include <trace/events/power.h>
 
@@ -726,10 +725,6 @@ static ssize_t store_##file_name					\
 {									\
 	int ret, temp;							\
 	struct cpufreq_policy new_policy;				\
-									\
-	if (&policy->object == &policy->min &&				\
-			is_battery_saver_on())				\
-		return count;						\
 									\
 	memcpy(&new_policy, policy, sizeof(*policy));			\
 	new_policy.min = policy->user_policy.min;			\
