@@ -148,7 +148,7 @@
  * ESD check & protection
  * default: disable
  */
-#define FTS_ESDCHECK_EN                         1
+#define FTS_ESDCHECK_EN                         0
 
 /*
  * Production test enable
@@ -196,7 +196,7 @@
 /*
  * auto upgrade for lcd cfg
  */
-#define FTS_AUTO_LIC_UPGRADE_EN                 0
+#define FTS_AUTO_LIC_UPGRADE_EN                 1
 
 /*
  * Numbers of modules support

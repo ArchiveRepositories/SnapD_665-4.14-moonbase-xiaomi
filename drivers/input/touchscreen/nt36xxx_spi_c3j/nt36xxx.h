@@ -48,7 +48,7 @@
 #include "../lct_tp_grip_area.h"
 #include "../lct_tp_work.h"
 
-#define NVT_DEBUG 1
+#define NVT_DEBUG 0
 
 //---GPIO number---
 #define NVTTOUCH_RST_PIN 87
