@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 4.14.215 Kernel Configuration
+# Linux/arm64 4.14.225 Kernel Configuration
 #
 CONFIG_ARM64=y
 CONFIG_64BIT=y
@@ -273,7 +273,6 @@ CONFIG_CC_STACKPROTECTOR_NONE=y
 # CONFIG_CC_STACKPROTECTOR_REGULAR is not set
 # CONFIG_CC_STACKPROTECTOR_STRONG is not set
 CONFIG_THIN_ARCHIVES=y
-# CONFIG_LD_BFD is not set
 # CONFIG_LD_GOLD is not set
 CONFIG_LD_LLD=y
 CONFIG_LTO=y
